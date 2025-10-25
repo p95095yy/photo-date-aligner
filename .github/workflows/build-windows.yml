@@ -1,0 +1,32 @@
+name: Build Windows exe
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"  # 適宜変更
+
+      - name: Install dependencies
+        run: go mod tidy
+
+      - name: Build Windows executable
+        run: |
+          go build -v -o photo-date-aligner.exe .
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: photo-date-aligner-windows
+          path: photo-date-aligner.exe
