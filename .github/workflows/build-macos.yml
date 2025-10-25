@@ -68,12 +68,18 @@ jobs:
     runs-on: macos-latest
     needs: build
     steps:
-      - name: Download both architectures
+      - name: Download amd64
         uses: actions/download-artifact@v4
         with:
-          pattern: photo-date-aligner-*
-          merge-multiple: true
+          name: photo-date-aligner-amd64
+          path: .
 
+      - name: Download arm64
+        uses: actions/download-artifact@v4
+        with:
+          name: photo-date-aligner-arm64
+          path: .
+          
       - name: Verify apps
         run: ls -R
 
