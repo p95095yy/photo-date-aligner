@@ -44,7 +44,7 @@ jobs:
           echo "Using largest icon: $largest_png"
           cp "$largest_png" app.png
 
-       - name: Verify PNG file
+      - name: Verify PNG file
         run: |
           identify app.png
           file app.png
