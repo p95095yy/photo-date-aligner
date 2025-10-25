@@ -49,9 +49,14 @@ jobs:
           env CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 fyne package \
             -os darwin -icon app.png -name photo-date-aligner \
             -release -app-id io.github.p95095yy.photodatealigner
-            
+
+      - name: Zip .app bundle (preserve resources)
+        run: |
+          ditto -c -k --sequesterRsrc --keepParent \
+            "photo-date-aligner.app" "photo-date-aligner-macos.zip"
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: photo-date-aligner-macos
-          path: photo-date-aligner.app
+          path: photo-date-aligner-macos.zip            
