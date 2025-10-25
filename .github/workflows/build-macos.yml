@@ -1,0 +1,38 @@
+name: Build macOS app
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+
+      - name: Install fyne CLI
+        run: go install fyne.io/tools/cmd/fyne@v1.7.0
+
+      - name: Install dependencies
+        run: go mod tidy
+
+      - name: Convert .ico to .png
+        run: magick convert app.ico app.png
+
+      - name: Build macOS app bundle
+        run: |
+          fyne package -os darwin -icon app.png -name photo-date-aligner -release -app-id io.github.p95095yy.photodatealigner
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: photo-date-aligner-macos
+          path: photo-date-aligner.app
