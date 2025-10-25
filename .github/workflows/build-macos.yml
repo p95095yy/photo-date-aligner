@@ -29,29 +29,37 @@ jobs:
       - name: Install ImageMagick
         run: brew install imagemagick
 
-      - name: Convert .ico to .png
+      - name: Convert .ico to high-res .png
         run: |
-          magick app.ico app.png || true
-          if [ ! -f app.png ]; then
-            # ICOの分割出力を考慮して、最初のPNGを採用
-            first_png=$(ls app-*.png | head -n 1)
-            echo "Using $first_png as app.png"
-            mv "$first_png" app.png
-          fi
+          # ICO内のすべてのPNGを展開
+          magick convert app.ico app-%02d.png
+          
+          # 最大サイズのPNGを選択
+          largest_png=$(identify -format "%w %h %f\n" app-*.png | \
+            awk '{print $1*$2, $3}' | sort -nr | head -n1 | awk '{print $2}')
+          
+          echo "Using largest icon: $largest_png"
+          cp "$largest_png" app.png
 
       - name: Verify PNG file
         run: |
-          ls -l app.png
+          identify app.png
           file app.png
+          ls -lh app.png
           
       - name: Build macOS app bundle (Intel)
         run: |
           env CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 fyne package \
             -os darwin -icon app.png -name photo-date-aligner \
             -release -app-id io.github.p95095yy.photodatealigner
-            
+
+      - name: Zip .app bundle (preserve resources)
+        run: |
+          ditto -c -k --sequesterRsrc --keepParent \
+            "photo-date-aligner.app" "photo-date-aligner-macos.zip"
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: photo-date-aligner-macos
-          path: photo-date-aligner.app
+          path: photo-date-aligner-macos.zip            
