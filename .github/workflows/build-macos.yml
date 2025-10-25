@@ -28,7 +28,12 @@ jobs:
         run: brew install imagemagick
 
       - name: Convert .ico to .png
-        run: magick convert app.ico app.png
+        run: magick app.ico app.png
+
+      - name: Verify PNG file
+        run: |
+          ls -l app.png
+          file app.png
 
       - name: Build macOS app bundle
         run: |
