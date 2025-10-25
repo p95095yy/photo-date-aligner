@@ -24,6 +24,9 @@ jobs:
       - name: Install dependencies
         run: go mod tidy
 
+      - name: Install ImageMagick
+        run: brew install imagemagick
+
       - name: Convert .ico to .png
         run: magick convert app.ico app.png
 
