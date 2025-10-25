@@ -1,4 +1,4 @@
-name: Build macOS app
+name: Build macOS Universal app
 
 on:
   push:
@@ -10,6 +10,9 @@ on:
 jobs:
   build:
     runs-on: macos-latest
+    strategy:
+      matrix:
+        arch: [amd64, arm64]
 
     steps:
       - name: Checkout source
@@ -41,25 +44,58 @@ jobs:
           echo "Using largest icon: $largest_png"
           cp "$largest_png" app.png
 
-      - name: Verify PNG file
+       - name: Verify PNG file
         run: |
           identify app.png
           file app.png
           ls -lh app.png
           
-      - name: Build macOS app bundle (Intel)
+      - name: Build macOS app bundle (${{ matrix.arch }})
         run: |
-          env CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 fyne package \
+          env CGO_ENABLED=1 GOOS=darwin GOARCH=${{ matrix.arch }} fyne package \
             -os darwin -icon app.png -name photo-date-aligner \
             -release -app-id io.github.p95095yy.photodatealigner
+          
+          mv "photo-date-aligner.app" "photo-date-aligner-${{ matrix.arch }}.app"
 
-      - name: Zip .app bundle (preserve resources)
-        run: |
-          ditto -c -k --sequesterRsrc --keepParent \
-            "photo-date-aligner.app" "photo-date-aligner-macos.zip"
-
-      - name: Upload artifact
+      - name: Upload per-arch artifact
         uses: actions/upload-artifact@v4
         with:
-          name: photo-date-aligner-macos
-          path: photo-date-aligner-macos.zip            
+          name: photo-date-aligner-${{ matrix.arch }}
+          path: photo-date-aligner-${{ matrix.arch }}.app
+
+  merge:
+    runs-on: macos-latest
+    needs: build
+    steps:
+      - name: Download both architectures
+        uses: actions/download-artifact@v4
+        with:
+          pattern: photo-date-aligner-*
+          merge-multiple: true
+
+      - name: Verify apps
+        run: ls -R
+
+      - name: Merge into Universal Binary
+        run: |
+          mkdir -p merged/Contents/MacOS
+          cp -R photo-date-aligner-amd64.app merged/
+          
+          lipo -create \
+            photo-date-aligner-amd64.app/Contents/MacOS/photo-date-aligner \
+            photo-date-aligner-arm64.app/Contents/MacOS/photo-date-aligner \
+            -output merged/Contents/MacOS/photo-date-aligner
+          
+          mv merged "photo-date-aligner.app"
+
+      - name: Zip Universal app
+        run: |
+          ditto -c -k --sequesterRsrc --keepParent \
+            "photo-date-aligner.app" "photo-date-aligner-macos-universal.zip"
+
+      - name: Upload Universal Binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: photo-date-aligner-macos-universal
+          path: photo-date-aligner-macos-universal.zip
