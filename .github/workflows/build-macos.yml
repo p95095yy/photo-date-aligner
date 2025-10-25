@@ -44,10 +44,12 @@ jobs:
           ls -l app.png
           file app.png
           
-      - name: Build macOS app bundle
+      - name: Build macOS app bundle (Intel)
         run: |
-          fyne package -os darwin -icon app.png -name photo-date-aligner -release -app-id io.github.p95095yy.photodatealigner
-
+          env CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 fyne package \
+            -os darwin -icon app.png -name photo-date-aligner \
+            -release -app-id io.github.p95095yy.photodatealigner
+            
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
