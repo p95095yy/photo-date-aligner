@@ -1,0 +1,17 @@
+version: '3'
+
+# =========================================
+#  Fyne GUIアプリ ビルド専用 Taskfile
+#  PowerShellでもechoが確実に動作
+# =========================================
+
+vars:
+  APP_NAME: PhotoDateAligner
+  ICON_FILE: app.ico
+
+tasks:
+  build:
+    desc: Build Windows GUI exe with icon
+    cmds:
+      - fyne package -os windows -name {{.APP_NAME}} -icon {{.ICON_FILE}} -release -app-id io.github.p95095yy.photodatealigner
+    silent: false

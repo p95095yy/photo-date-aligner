@@ -1,0 +1,15 @@
+# Go build artifacts
+*.exe
+*.out
+*.test
+*.dll
+*.patch
+*.code-workspace
+
+# IDE settings
+.vscode/
+.idea/
+
+# OS-generated
+.DS_Store
+Thumbs.db
