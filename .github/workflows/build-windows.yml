@@ -19,7 +19,7 @@ jobs:
           go-version: "1.22"
 
       - name: Install fyne CLI
-        run: go install fyne.io/tools/cmd/fyne@v2.5.1
+        run: go install fyne.io/tools/cmd/fyne@v1.7.0
 
       - name: Install dependencies
         run: go mod tidy
