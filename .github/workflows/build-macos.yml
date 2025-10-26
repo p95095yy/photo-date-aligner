@@ -86,11 +86,11 @@ jobs:
       - name: Merge into Universal Binary
         run: |
           mkdir -p merged/Contents/MacOS
-          cp -R photo-date-aligner-amd64.app merged/
-          
+          cp -R photo-date-aligner-amd64/photo-date-aligner-amd64.app merged/
+
           lipo -create \
-            photo-date-aligner-amd64.app/Contents/MacOS/photo-date-aligner \
-            photo-date-aligner-arm64.app/Contents/MacOS/photo-date-aligner \
+            photo-date-aligner-amd64/photo-date-aligner-amd64.app/Contents/MacOS/photo-date-aligner \
+            photo-date-aligner-arm64/photo-date-aligner-arm64.app/Contents/MacOS/photo-date-aligner \
             -output merged/Contents/MacOS/photo-date-aligner
           
           mv merged "photo-date-aligner.app"
