@@ -64,44 +64,14 @@ jobs:
           name: photo-date-aligner-${{ matrix.arch }}
           path: ./photo-date-aligner-${{ matrix.arch }}.app/
 
-  merge:
-    runs-on: macos-latest
-    needs: build
-    steps:
-      - name: Download amd64
-        uses: actions/download-artifact@v4
-        with:
-          name: photo-date-aligner-amd64
-          path: amd64
-
-      - name: Download arm64
-        uses: actions/download-artifact@v4
-        with:
-          name: photo-date-aligner-arm64
-          path: arm64
-          
-      - name: Verify apps
-        run: ls -R
-
-      - name: Merge into Universal Binary
-        run: |
-          # amd64/arm64 の両方とも直下に Contents/ が展開されている前提
-          mkdir -p merged
-          cp -R amd64/Contents merged/
-          mkdir -p merged/Contents/MacOS
-          lipo -create \
-            amd64/Contents/MacOS/photo-date-aligner \
-            arm64/Contents/MacOS/photo-date-aligner \
-            -output merged/Contents/MacOS/photo-date-aligner
-          mv merged "photo-date-aligner.app"
-
-      - name: Zip Universal app
+      - name: Zip per-arch app
         run: |
           ditto -c -k --sequesterRsrc --keepParent \
-            "photo-date-aligner.app" "photo-date-aligner-macos-universal.zip"
+            "photo-date-aligner-${{ matrix.arch }}.app" \
+            "photo-date-aligner-${{ matrix.arch }}.zip"
 
-      - name: Upload Universal Binary
+      - name: Upload zipped artifact
         uses: actions/upload-artifact@v4
         with:
-          name: photo-date-aligner-macos-universal
-          path: photo-date-aligner-macos-universal.zip
+          name: photo-date-aligner-${{ matrix.arch }}-zip
+          path: photo-date-aligner-${{ matrix.arch }}.zip
