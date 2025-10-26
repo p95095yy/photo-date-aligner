@@ -62,7 +62,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: photo-date-aligner-${{ matrix.arch }}
-          path: photo-date-aligner-${{ matrix.arch }}.app
+          path: ./photo-date-aligner-${{ matrix.arch }}.app/
 
   merge:
     runs-on: macos-latest
