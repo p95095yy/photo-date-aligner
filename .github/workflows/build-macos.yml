@@ -72,27 +72,27 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: photo-date-aligner-amd64
-          path: .
+          path: amd64
 
       - name: Download arm64
         uses: actions/download-artifact@v4
         with:
           name: photo-date-aligner-arm64
-          path: .
+          path: arm64
           
       - name: Verify apps
         run: ls -R
 
       - name: Merge into Universal Binary
         run: |
+          # amd64/arm64 の両方とも直下に Contents/ が展開されている前提
+          mkdir -p merged
+          cp -R amd64/Contents merged/
           mkdir -p merged/Contents/MacOS
-          cp -R photo-date-aligner-amd64/photo-date-aligner-amd64.app merged/
-
           lipo -create \
-            photo-date-aligner-amd64/photo-date-aligner-amd64.app/Contents/MacOS/photo-date-aligner \
-            photo-date-aligner-arm64/photo-date-aligner-arm64.app/Contents/MacOS/photo-date-aligner \
+            amd64/Contents/MacOS/photo-date-aligner \
+            arm64/Contents/MacOS/photo-date-aligner \
             -output merged/Contents/MacOS/photo-date-aligner
-          
           mv merged "photo-date-aligner.app"
 
       - name: Zip Universal app
