@@ -22,11 +22,17 @@ import (
 )
 
 // --- Runボタン用ハンドラを生成する関数 ---
-func makeRunHandler(selectedDate *time.Time, folderEntry *widget.Entry, selectedMode *string) func() {
+func makeRunHandler(selectedDate *time.Time, folderEntry *widget.Entry, selectedMode *string, dp *datepicker.DateTimePicker) func() {
 	return func() {
-		println("Selected date:", selectedDate.Format("2006-01-02"))
+		// DatePicker がダイアログ型のため、Run 押下時に確定させる
+		if dp != nil && dp.OnActioned != nil {
+			dp.OnActioned(true)
+		}
+
+		// デバッグログ: Run が押されたときの selectedDate の詳細を出力
+		fmt.Println("[RUN] Selected date:", selectedDate.Format("2006-01-02 15:04:05"), "Location:", selectedDate.Location())
 		srcFolder := folderEntry.Text
-		println("Selected folder:", srcFolder)
+		fmt.Println("[RUN] Selected folder:", srcFolder)
 
 		// --- フォルダ存在チェック ---
 		if info, err := os.Stat(srcFolder); err != nil || !info.IsDir() {
@@ -137,9 +143,12 @@ func main() {
 	label.Refresh()
 
 	dp := datepicker.NewDatePicker(selectedDate, time.Monday, func(t time.Time, ok bool) {
+		// デバッグログ: DatePicker のイベント発火を確認
+		fmt.Println("[DP] callback t=", t.Format("2006-01-02 15:04:05"), "ok=", ok, "loc=", t.Location())
 		if ok {
 			selectedDate = time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
 			label.SetText("Start: " + selectedDate.Format("2006-01-02"))
+			fmt.Println("[DP] selectedDate set to:", selectedDate.Format("2006-01-02 15:04:05"), "loc=", selectedDate.Location())
 		}
 	})
 
@@ -160,7 +169,7 @@ func main() {
 	modeRadio.SetSelected(selectedMode)
 
 	// --- Runボタン（最初は無効） ---
-	runBtn := widget.NewButton("Run", makeRunHandler(&selectedDate, folderEntry, &selectedMode))
+	runBtn := widget.NewButton("Run", makeRunHandler(&selectedDate, folderEntry, &selectedMode, dp))
 	runBtn.Disable()
 
 	// --- フォルダ選択 ---
