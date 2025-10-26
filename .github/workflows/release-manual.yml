@@ -1,0 +1,73 @@
+name: Manual Release (build → publish)
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: "Release tag (例: v1.2.3)"
+        required: true
+        type: string
+      release_name:
+        description: "Release名（未入力なら tag_name を使用）"
+        required: false
+        type: string
+      prerelease:
+        description: "Pre-release として公開する"
+        required: false
+        default: false
+        type: boolean
+      draft:
+        description: "Draftとして作成（後でPublish）"
+        required: false
+        default: false
+        type: boolean
+      notes:
+        description: "Release notes（任意）"
+        required: false
+        type: string
+
+permissions:
+  contents: write  # ← Release作成に必須
+
+jobs:
+  build-and-release-macos:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+
+      - name: Install fyne CLI
+        run: go install fyne.io/tools/cmd/fyne@v1.7.0
+
+      - name: Tidy
+        run: go mod tidy
+
+      # （必要なら）アイコン前処理などをここに
+      # - name: Install ImageMagick
+      #   run: brew install imagemagick
+
+      - name: Build macOS .app (Universal)
+        run: |
+          # Universalを想定（arm64/amd64）※fyne v2.5+ 相当機能
+          fyne package -os darwin -appVersion "${{ github.event.inputs.tag_name }}" -icon assets/Icon.png
+          mkdir -p dist
+          zip -r dist/MyApp-macOS.zip *.app
+
+      - name: Create & Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.tag_name }}
+          name: ${{ github.event.inputs.release_name || github.event.inputs.tag_name }}
+          body: ${{ github.event.inputs.notes }}
+          prerelease: ${{ github.event.inputs.prerelease }}
+          draft: ${{ github.event.inputs.draft }}
+          files: |
+            dist/MyApp-macOS.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
