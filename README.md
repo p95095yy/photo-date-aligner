@@ -23,6 +23,7 @@ task build
 
 ## Dependencies
 - [Fyne](https://github.com/fyne-io/fyne) — Cross-platform GUI framework  
+- [fyne-datepicker](https://github.com/sdassow/fyne-datepicker) — DatePicker widget for Fyne (used for date selection UI)
 - [sqweek/dialog](https://github.com/sqweek/dialog) — Native file/folder selection dialogs  
 - [go-exif](https://github.com/dsoprea/go-exif) — EXIF metadata handler  
 - [go-jpeg-image-structure](https://github.com/dsoprea/go-jpeg-image-structure) — JPEG parser/writer

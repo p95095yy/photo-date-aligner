@@ -17,6 +17,7 @@ import (
 	"github.com/dsoprea/go-exif/v3"
 	jpegstructure "github.com/dsoprea/go-jpeg-image-structure/v2"
 
+	datepicker "github.com/sdassow/fyne-datepicker"
 	sqDialog "github.com/sqweek/dialog"
 )
 
@@ -131,15 +132,15 @@ func main() {
 	selectedDate = time.Now()
 	selectedDate = time.Date(selectedDate.Year(), selectedDate.Month(), selectedDate.Day(), 0, 0, 0, 0, selectedDate.Location())
 
-	label := widget.NewLabel("Start: " + selectedDate.Format("2006-01-02 15:04"))
+	label := widget.NewLabel("Start: " + selectedDate.Format("2006-01-02"))
 	label.TextStyle = fyne.TextStyle{Bold: true}
 	label.Refresh()
 
-	cal := widget.NewCalendar(time.Now(), func(t time.Time) {
-		selectedDate = t
-		selectedDate = time.Date(selectedDate.Year(), selectedDate.Month(), selectedDate.Day(), 0, 0, 0, 0, selectedDate.Location())
-
-		label.SetText("Start: " + selectedDate.Format("2006-01-02 15:04"))
+	dp := datepicker.NewDatePicker(selectedDate, time.Monday, func(t time.Time, ok bool) {
+		if ok {
+			selectedDate = time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
+			label.SetText("Start: " + selectedDate.Format("2006-01-02"))
+		}
 	})
 
 	folderEntry := widget.NewEntry()
@@ -178,7 +179,7 @@ func main() {
 		container.NewBorder(nil, nil, nil, selectFolderBtn, folderEntry),
 		widget.NewSeparator(),
 		label,
-		cal,
+		dp,
 		widget.NewSeparator(),
 		widget.NewLabel("Timestamp Update Mode:"),
 		modeRadio,
