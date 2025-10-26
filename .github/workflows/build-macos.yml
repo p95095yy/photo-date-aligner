@@ -1,4 +1,4 @@
-name: Build macOS app
+name: Build macOS Universal app
 
 on:
   push:
@@ -10,6 +10,9 @@ on:
 jobs:
   build:
     runs-on: macos-latest
+    strategy:
+      matrix:
+        arch: [amd64, arm64]
 
     steps:
       - name: Checkout source
@@ -47,19 +50,28 @@ jobs:
           file app.png
           ls -lh app.png
           
-      - name: Build macOS app bundle (Intel)
+      - name: Build macOS app bundle (${{ matrix.arch }})
         run: |
-          env CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 fyne package \
+          env CGO_ENABLED=1 GOOS=darwin GOARCH=${{ matrix.arch }} fyne package \
             -os darwin -icon app.png -name photo-date-aligner \
             -release -app-id io.github.p95095yy.photodatealigner
+          
+          mv "photo-date-aligner.app" "photo-date-aligner-${{ matrix.arch }}.app"
 
-      - name: Zip .app bundle (preserve resources)
-        run: |
-          ditto -c -k --sequesterRsrc --keepParent \
-            "photo-date-aligner.app" "photo-date-aligner-macos.zip"
-
-      - name: Upload artifact
+      - name: Upload per-arch artifact
         uses: actions/upload-artifact@v4
         with:
-          name: photo-date-aligner-macos
-          path: photo-date-aligner-macos.zip            
+          name: photo-date-aligner-${{ matrix.arch }}
+          path: ./photo-date-aligner-${{ matrix.arch }}.app/
+
+      - name: Zip per-arch app
+        run: |
+          ditto -c -k --sequesterRsrc --keepParent \
+            "photo-date-aligner-${{ matrix.arch }}.app" \
+            "photo-date-aligner-${{ matrix.arch }}.zip"
+
+      - name: Upload zipped artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: photo-date-aligner-${{ matrix.arch }}-zip
+          path: photo-date-aligner-${{ matrix.arch }}.zip
