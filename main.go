@@ -138,16 +138,11 @@ func main() {
 	selectedDate = time.Now()
 	selectedDate = time.Date(selectedDate.Year(), selectedDate.Month(), selectedDate.Day(), 0, 0, 0, 0, selectedDate.Location())
 
-	label := widget.NewLabel("Start: " + selectedDate.Format("2006-01-02"))
-	label.TextStyle = fyne.TextStyle{Bold: true}
-	label.Refresh()
-
 	dp := datepicker.NewDatePicker(selectedDate, time.Monday, func(t time.Time, ok bool) {
 		// デバッグログ: DatePicker のイベント発火を確認
 		fmt.Println("[DP] callback t=", t.Format("2006-01-02 15:04:05"), "ok=", ok, "loc=", t.Location())
 		if ok {
 			selectedDate = time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
-			label.SetText("Start: " + selectedDate.Format("2006-01-02"))
 			fmt.Println("[DP] selectedDate set to:", selectedDate.Format("2006-01-02 15:04:05"), "loc=", selectedDate.Location())
 		}
 	})
@@ -187,7 +182,6 @@ func main() {
 		widget.NewLabel("Photo Folder:"),
 		container.NewBorder(nil, nil, nil, selectFolderBtn, folderEntry),
 		widget.NewSeparator(),
-		label,
 		dp,
 		widget.NewSeparator(),
 		widget.NewLabel("Timestamp Update Mode:"),
