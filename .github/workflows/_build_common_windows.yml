@@ -1,0 +1,29 @@
+name: Common Windows Build
+on:
+  workflow_call:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+
+      - name: Install fyne CLI
+        run: go install fyne.io/tools/cmd/fyne@v1.7.0
+
+      - name: Install dependencies
+        run: go mod tidy
+
+      - name: Build Windows executable (no console)
+        run: |
+          fyne package -os windows -icon app.ico -name photo-date-aligner -release -app-id io.github.p95095yy.photodatealigner
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: photo-date-aligner-windows
+          path: photo-date-aligner.exe

@@ -1,30 +1,29 @@
-﻿name: Create Windows Release from Artifact
+﻿name: Release Windows
 
 on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Tag name (例: v0.1.1)'
-        required: true
-      run_id:
-        description: 'Build workflow run-id'
+        description: 'Release tag (例: v0.1.1)'
         required: true
 
 jobs:
-  release:
+  build-and-release:
+    uses: ./.github/workflows/_build_common_windows.yml
+
+  create-release:
+    needs: build-and-release
     runs-on: ubuntu-latest
     permissions:
-      actions: read
       contents: write
 
     steps:
-      - name: Download Windows artifact
+      - name: Download built artifact
         uses: actions/download-artifact@v4
         with:
           name: photo-date-aligner-windows
-          run-id: ${{ github.event.inputs.run_id }}
 
-      - name: Create Draft Release
+      - name: Create draft release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.inputs.tag }}
