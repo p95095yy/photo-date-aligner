@@ -1,0 +1,24 @@
+﻿name: Create Windows Release from Artifact
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag name (例: v0.1.1)'
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: photo-date-aligner-windows
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.tag }}
+          name: Release ${{ github.event.inputs.tag }} for Windows
+          files: photo-date-aligner.exe
+          draft: true
