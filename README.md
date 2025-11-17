@@ -8,6 +8,8 @@ The original files are never modified, and updated photos are saved into a separ
 
 # 使い方 / How to Use
 
+<img src="Screenshot.png" width="400">
+
 ## 1. フォルダを指定する / Select a Folder
 画面上部の `Photo Folder` 欄に対象フォルダのパスを入力するか、右側の `Browse` ボタンからフォルダを選択します。  
 Enter the path in the `Photo Folder` field at the top, or select a folder using the `Browse` button.
@@ -26,13 +28,11 @@ Choose one of the options under `Timestamp Update Mode`.
 
 - `Increment by filename order (Ascending)`  
   ファイル名順に並べ、0:00:00 から **1分ずつずらして** 時刻を設定します。  
-  Sort files by name in ascending order and assign timestamps  
-  by **adding 1 minute step-by-step** starting from 0:00:00.
+  Sort files by name in ascending order and assign timestamps by **adding 1 minute step-by-step** starting from 0:00:00.
 
 - `Increment by reverse filename order (Descending)`  
   ファイル名逆順に並べ、0:00:00 から **1分ずつずらして** 時刻を設定します。  
-  Sort files by name in descending order and assign timestamps  
-  by **adding 1 minute step-by-step** starting from 0:00:00.
+  Sort files by name in descending order and assign timestamps by **adding 1 minute step-by-step** starting from 0:00:00.
 
 ## 4. 実行する / Run the Process
 画面下部の `Run` ボタンを押して処理を開始します。  
