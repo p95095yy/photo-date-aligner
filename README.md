@@ -1,25 +1,34 @@
 # Photo Date Aligner
 
-A simple GUI tool written in Go to copy JPEG files and align their EXIF shooting dates sequentially by one-minute intervals.  
-Uses a calendar picker for the start date and supports native folder selection dialogs.
+## Defender の警告画面で実行する方法
+## How to Run the App When Defender Shows a Warning
 
-## Features
-- Cross-platform GUI (Fyne)
-- Native folder selection (sqweek/dialog)
-- EXIF date modification using go-exif and go-jpeg-image-structure
-- Remembers the last selected folder
+初回起動すると  
+**「Windows はお使いの PC を保護しました」**  
+という画面が表示されることがあります。
+When you start the app for the first time,  
+you may see a screen saying  
+**“Windows protected your PC.”**
 
-## Build
+### なぜ出るのか
+### Why This Appears
+このアプリは個人開発で、**コード署名証明書を付けていません**。  
+そのため Windows が「発行元が確認できないアプリ」と判断し、  
+安全確認のため警告画面が表示されます。
+This app is individually developed and **does not include a code-signing certificate**.  
+Windows therefore cannot verify the publisher and shows this warning  
+as a safety confirmation.
 
-```bash
-task build
-```
+### 実行手順
+### How to Run It
+1. 警告画面左側の **「詳細情報」** をクリックします。  
+1. Click **“More info”** on the left side of the warning screen.  
 
-## Usage
-1. Run the application.
-2. Select a folder containing JPEG files.
-3. Pick the starting date from the calendar.
-4. Click **Run** to copy all images into a new folder with incremented EXIF times.
+2. 下部に **「実行」** ボタンが表示されます。  
+2. A new button labeled **“Run anyway”** will appear at the bottom.  
+
+3. **「実行」** をクリックするとアプリが起動します。  
+3. Click **“Run anyway”** to launch the app.
 
 ## Dependencies
 - [Fyne](https://github.com/fyne-io/fyne) — Cross-platform GUI framework  
