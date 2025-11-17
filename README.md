@@ -6,19 +6,19 @@ Photo Date Aligner は、フォルダ内の JPG 写真の撮影日時をまと�
 Photo Date Aligner is a simple tool for batch-adjusting the timestamp of JPG photos inside a folder.
 The original files are never modified, and updated photos are saved into a separate folder.
 
-# 使い方 / How to Use
+## 使い方 / How to Use
 
 <img src="Screenshot.png" width="400">
 
-## 1. フォルダを指定する / Select a Folder
+### 1. フォルダを指定する / Select a Folder
 画面上部の `Photo Folder` 欄に対象フォルダのパスを入力するか、右側の `Browse` ボタンからフォルダを選択します。  
 Enter the path in the `Photo Folder` field at the top, or select a folder using the `Browse` button.
 
-## 2. 日付を選ぶ / Choose a Date
+### 2. 日付を選ぶ / Choose a Date
 中央のカレンダーから、写真に設定したい **年月日** を選びます。  選択した日付の **0:00:00** が基準時刻として使用されます。  
 Select the **year, month, and day** from the calendar. The selected date’s **0:00:00** will be used as the base timestamp.
 
-## 3. 更新モードを選ぶ / Select a Timestamp Update Mode
+### 3. 更新モードを選ぶ / Select a Timestamp Update Mode
 `Timestamp Update Mode` から、次のいずれかを選択します。  
 Choose one of the options under `Timestamp Update Mode`.
 
@@ -34,7 +34,7 @@ Choose one of the options under `Timestamp Update Mode`.
   ファイル名逆順に並べ、0:00:00 から **1分ずつずらして** 時刻を設定します。  
   Sort files by name in descending order and assign timestamps by **adding 1 minute step-by-step** starting from 0:00:00.
 
-## 4. 実行する / Run the Process
+### 4. 実行する / Run the Process
 画面下部の `Run` ボタンを押して処理を開始します。  
 Press the `Run` button at the bottom to start processing.
 
